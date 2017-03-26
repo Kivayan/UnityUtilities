@@ -78,8 +78,10 @@
     <Compile Include="Assets\Extensions\Debug\DebugPanel.cs" />
     <Compile Include="Assets\Extensions\Debug\DebugPanel\DebugPanelField.cs" />
     <Compile Include="Assets\Extensions\Debug\DebugPanel\DebugPanelViewport.cs" />
+    <Compile Include="Assets\Flying\Flying.cs" />
+    <Compile Include="Assets\Flying\Interfaces.cs" />
+    <Compile Include="Assets\Flying\MovementController.cs" />
     <Compile Include="Assets\Flying\Walk.cs" />
-    <Compile Include="Assets\Utils\Movement.cs" />
     <Compile Include="Assets\Utils\TMP.cs" />
     <Compile Include="Assets\Utils\Test.cs" />
   </ItemGroup>

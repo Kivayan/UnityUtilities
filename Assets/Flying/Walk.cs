@@ -1,44 +1,43 @@
 ﻿using UnityEngine;
 
-public class Walk : MonoBehaviour
+public class Walk : MonoBehaviour, IMovement
 {
-    private float currentSpeed;
     public float speed = 6.0F;
-    public float shiftSpeed = 12f;
-    public float riseSpeed = 8.0F;
-    public float descentSpeed = -8.0F;
+    public float jumpSpeed = 8.0F;
     public float gravity = 20.0F;
     private Vector3 moveDirection = Vector3.zero;
+    private float timer = 0;
 
-    public float mouseYSpeed = 2;
-    public float mouseXSpeed = 2;
+    private Transform camTrans;
 
-    private float Yrotate = 0;
-    private float Xrotate = 0;
+    [Range(00, 150)] public float mouseXSpeed = 50;
+    [Range(20, 150)] public float mouseYSpeed = 50;
 
-    private void Update()
+    private float YRotate = 0;
+    private float XRotate = 0;
+
+    public void Start()
     {
-        Move();
-        Rotate();
-        Debug();
+        camTrans = GetComponentInChildren<Camera>().GetComponent<Transform>();
     }
 
-    private void Move()
+    public void Move()
+    {
+        Walking();
+        Rotate();
+        Debugging();
+    }
+
+    private void Walking()
     {
         CharacterController controller = GetComponent<CharacterController>();
-        if (true)//controller.isGrounded)
+        if (controller.isGrounded)
         {
             moveDirection = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
             moveDirection = transform.TransformDirection(moveDirection);
-            moveDirection *= currentSpeed;
-            if (Input.GetKey(KeyCode.Space))
-                moveDirection.y = riseSpeed;
-            if (Input.GetKey(KeyCode.LeftControl))
-                moveDirection.y = descentSpeed;
-            if (Input.GetKey(KeyCode.LeftShift))
-                currentSpeed = shiftSpeed;
-            else
-                currentSpeed = speed;
+            moveDirection *= speed;
+            if (Input.GetButton("Jump"))
+                moveDirection.y = jumpSpeed;
         }
         moveDirection.y -= gravity * Time.deltaTime;
         controller.Move(moveDirection * Time.deltaTime);
@@ -46,16 +45,51 @@ public class Walk : MonoBehaviour
 
     private void Rotate()
     {
-        Yrotate += -(Input.GetAxis("Mouse Y") * mouseYSpeed * Time.deltaTime);
-        Xrotate += Input.GetAxis("Mouse X") * mouseYSpeed * Time.deltaTime;
+        XRotate += -(Input.GetAxis("Mouse Y") * mouseXSpeed * Time.deltaTime);
+        YRotate += Input.GetAxis("Mouse X") * mouseYSpeed * Time.deltaTime;
 
-        transform.rotation = Quaternion.Euler(new Vector3(Yrotate, Xrotate, 0));
+        transform.rotation = Quaternion.Euler(new Vector3(0, YRotate, 0));
+
+
+        if (camTrans.eulerAngles.x <= 10 && camTrans.eulerAngles.x >= -10)
+        {
+            camTrans.Rotate(new Vector3(XRotate, 0, 0));
+        }
+
+
+        /*
+    if (transform.rotation.x != 0)
+        ResetXRotation();
+    else
+        transform.rotation = Quaternion.Euler(new Vector3(0, YRotate, 0));
+
+    */
     }
 
-    private void Debug()
+    private void Debugging()
     {
-        DebugPanel.Log("Mouse Y", "Input", Yrotate);
-        DebugPanel.Log("Mouse X", "Input", Xrotate);
-        DebugPanel.Log("CurrentSpeed", "Movement", currentSpeed);
+        DebugPanel.Log("WalkSpeed", "Movement", speed);
+        DebugPanel.Log("XRotate", "InputWalk", XRotate);
+        DebugPanel.Log("YRotate", "InputWalk", YRotate);
+        DebugPanel.Log("CamRotX", "Cam", camTrans.eulerAngles.x);
+        
+    }
+
+    private void ResetXRotation()
+    {
+        timer += 0.2f * Time.deltaTime;
+        Debug.Log("dupakwas = " + timer);
+        transform.rotation = Quaternion.Euler(new Vector3(Mathf.Lerp(transform.rotation.x, 0, timer), YRotate, 0));
+    }
+
+    void IMovement.SetCurrentRotation(Vector3 startingRotation)
+    {
+        XRotate = startingRotation.x;
+        YRotate = startingRotation.y;
+    }
+
+    Vector3 IMovement.GetCurrentRotation()
+    {
+        return new Vector3(XRotate, YRotate, transform.rotation.z);
     }
 }
