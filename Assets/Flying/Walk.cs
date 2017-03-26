@@ -6,23 +6,20 @@ public class Walk : MonoBehaviour, IMovement
     public float jumpSpeed = 8.0F;
     public float gravity = 20.0F;
     private Vector3 moveDirection = Vector3.zero;
+
+    private bool NormalizedRotation = true;
     private float timer = 0;
 
-    private Transform camTrans;
-
-    [Range(00, 150)] public float mouseXSpeed = 50;
     [Range(20, 150)] public float mouseYSpeed = 50;
 
     private float YRotate = 0;
     private float XRotate = 0;
-
-    public void Start()
-    {
-        camTrans = GetComponentInChildren<Camera>().GetComponent<Transform>();
-    }
+    private float XRotateNormalizeStartPoint;
+    [Range(0, 5)] private float XBackToZeroSpeed;
 
     public void Move()
     {
+        ResetXRotation();
         Walking();
         Rotate();
         Debugging();
@@ -45,25 +42,9 @@ public class Walk : MonoBehaviour, IMovement
 
     private void Rotate()
     {
-        XRotate += -(Input.GetAxis("Mouse Y") * mouseXSpeed * Time.deltaTime);
         YRotate += Input.GetAxis("Mouse X") * mouseYSpeed * Time.deltaTime;
 
-        transform.rotation = Quaternion.Euler(new Vector3(0, YRotate, 0));
-
-
-        if (camTrans.eulerAngles.x <= 10 && camTrans.eulerAngles.x >= -10)
-        {
-            camTrans.Rotate(new Vector3(XRotate, 0, 0));
-        }
-
-
-        /*
-    if (transform.rotation.x != 0)
-        ResetXRotation();
-    else
-        transform.rotation = Quaternion.Euler(new Vector3(0, YRotate, 0));
-
-    */
+        transform.rotation = Quaternion.Euler(new Vector3(XRotate, YRotate, 0));
     }
 
     private void Debugging()
@@ -71,15 +52,31 @@ public class Walk : MonoBehaviour, IMovement
         DebugPanel.Log("WalkSpeed", "Movement", speed);
         DebugPanel.Log("XRotate", "InputWalk", XRotate);
         DebugPanel.Log("YRotate", "InputWalk", YRotate);
-        DebugPanel.Log("CamRotX", "Cam", camTrans.eulerAngles.x);
-        
+        DebugPanel.Log("NormalizedRotation", "Rotation", NormalizedRotation);
+        DebugPanel.Log("XRotateNormalizeStartPoint", "Rotation", XRotateNormalizeStartPoint);
     }
 
+
+    //Ensures that if rotation in X is not set to 0 it will be lerped to 0. 
+    //This will happen in most scenarios where movement engine is changed from flying (which allows rotation in xAxis)
     private void ResetXRotation()
     {
-        timer += 0.2f * Time.deltaTime;
-        Debug.Log("dupakwas = " + timer);
-        transform.rotation = Quaternion.Euler(new Vector3(Mathf.Lerp(transform.rotation.x, 0, timer), YRotate, 0));
+        if (XRotate != 0 && NormalizedRotation == true)
+        {
+            NormalizedRotation = false;
+            XRotateNormalizeStartPoint = XRotate;
+        }
+
+        if (NormalizedRotation == false)
+        {
+            timer += XBackToZeroSpeed * Time.deltaTime;
+            XRotate = Mathf.Lerp(XRotateNormalizeStartPoint, 0, timer);
+            if (XRotate == 0)
+            {
+                NormalizedRotation = true;
+                timer = 0;
+            }
+        }
     }
 
     void IMovement.SetCurrentRotation(Vector3 startingRotation)
