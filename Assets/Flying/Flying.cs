@@ -21,7 +21,7 @@ public class Flying : MonoBehaviour, IMovement
     {
         Move();
         Rotate();
-        Debug();
+        DebugInfo();
     }
 
     private void Move()
@@ -63,7 +63,7 @@ public class Flying : MonoBehaviour, IMovement
             currentSpeed = speed;
     }
 
-    private void Debug()
+    private void DebugInfo()
     {
         DebugPanel.Log("Mouse Y", "Input", YRotate);
         DebugPanel.Log("Mouse X", "Input", XRotate);

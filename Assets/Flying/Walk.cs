@@ -15,14 +15,14 @@ public class Walk : MonoBehaviour, IMovement
     private float YRotate = 0;
     private float XRotate = 0;
     private float XRotateNormalizeStartPoint;
-    [Range(0, 5)] private float XBackToZeroSpeed;
+    [Range(0, 5)] public float XBackToZeroSpeed;
 
     public void Move()
     {
         ResetXRotation();
         Walking();
         Rotate();
-        Debugging();
+        DebugInfo();
     }
 
     private void Walking()
@@ -47,7 +47,7 @@ public class Walk : MonoBehaviour, IMovement
         transform.rotation = Quaternion.Euler(new Vector3(XRotate, YRotate, 0));
     }
 
-    private void Debugging()
+    private void DebugInfo()
     {
         DebugPanel.Log("WalkSpeed", "Movement", speed);
         DebugPanel.Log("XRotate", "InputWalk", XRotate);
@@ -63,6 +63,7 @@ public class Walk : MonoBehaviour, IMovement
     {
         if (XRotate != 0 && NormalizedRotation == true)
         {
+            Debug.Log("normalizing");
             NormalizedRotation = false;
             XRotateNormalizeStartPoint = XRotate;
         }
