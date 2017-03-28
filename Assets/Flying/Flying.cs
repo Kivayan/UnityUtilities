@@ -10,6 +10,7 @@ public class Flying : MonoBehaviour, IMovement
     public float gravity = 0;
 
     public float distanceLimit;
+    private bool limtBreached = false;
     private Vector3 moveDirection = Vector3.zero;
 
     [Range(20, 150)] public float mouseYSpeed = 50;
@@ -31,6 +32,7 @@ public class Flying : MonoBehaviour, IMovement
         Move();
         Rotate();
         DebugInfo();
+        UpdateDist();
     }
 
     private void Move()
@@ -40,14 +42,21 @@ public class Flying : MonoBehaviour, IMovement
         moveDirection = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
         moveDirection = transform.TransformDirection(moveDirection);
         moveDirection *= currentSpeed;
+        moveDirection.y -= gravity * Time.deltaTime;
 
         RiseAndDescend();
         Accelerate();
 
         if (distFromGround >= distanceLimit)
-            moveDirection.y = 0;
+        {
+            limtBreached = true;
+            moveDirection = Vector3.down;
+        }
+        else
+        {
+            limtBreached = false;
+        }
 
-        moveDirection.y -= gravity * Time.deltaTime;
         controller.Move(moveDirection * Time.deltaTime);
     }
 
@@ -80,6 +89,8 @@ public class Flying : MonoBehaviour, IMovement
         DebugPanel.Log("Mouse Y", "Input", YRotate);
         DebugPanel.Log("Mouse X", "Input", XRotate);
         DebugPanel.Log("FlySpeed", "Movement", currentSpeed);
+        DebugPanel.Log("LimitBreached", "Movement", limtBreached);
+        DebugPanel.Log("distFromGround", "Movement", distFromGround);
     }
 
     private void UpdateDist()
