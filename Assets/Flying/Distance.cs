@@ -5,7 +5,7 @@ public class Distance : MonoBehaviour
     private RaycastHit rayHit;
     private Ray ray;
 
-    private float distance;
+    public float distance;
 
     private void Start()
     {
@@ -16,7 +16,6 @@ public class Distance : MonoBehaviour
     {
         CalculateDist();
         DebugInfo();
-        
     }
 
     private void DebugInfo()

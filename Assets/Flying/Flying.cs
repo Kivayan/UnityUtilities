@@ -1,5 +1,4 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class Flying : MonoBehaviour, IMovement
 {
@@ -9,6 +8,8 @@ public class Flying : MonoBehaviour, IMovement
     public float riseSpeed = 8.0F;
     public float descentSpeed = -8.0F;
     public float gravity = 0;
+
+    public float distanceLimit;
     private Vector3 moveDirection = Vector3.zero;
 
     [Range(20, 150)] public float mouseYSpeed = 50;
@@ -16,6 +17,14 @@ public class Flying : MonoBehaviour, IMovement
 
     private float YRotate = 0;
     private float XRotate = 0;
+
+    private float distFromGround;
+    private Distance dist;
+
+    private void Start()
+    {
+        dist = GetComponent<Distance>();
+    }
 
     void IMovement.Move()
     {
@@ -34,6 +43,9 @@ public class Flying : MonoBehaviour, IMovement
 
         RiseAndDescend();
         Accelerate();
+
+        if (distFromGround >= distanceLimit)
+            moveDirection.y = 0;
 
         moveDirection.y -= gravity * Time.deltaTime;
         controller.Move(moveDirection * Time.deltaTime);
@@ -70,7 +82,11 @@ public class Flying : MonoBehaviour, IMovement
         DebugPanel.Log("FlySpeed", "Movement", currentSpeed);
     }
 
-    
+    private void UpdateDist()
+    {
+        distFromGround = dist.distance;
+    }
+
     void IMovement.SetCurrentRotation(Vector3 startingRotation)
     {
         XRotate = startingRotation.x;
