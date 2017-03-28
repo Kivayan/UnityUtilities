@@ -10,6 +10,8 @@ public class Flying : MonoBehaviour, IMovement
     public float descentSpeed = -8.0F;
     public float gravity = 0;
     private Vector3 moveDirection = Vector3.zero;
+    private DistanceTracker distTrack;
+    private float distanceFromGround;
 
     [Range(20, 150)] public float mouseYSpeed = 50;
     [Range(20, 150)] public float mouseXSpeed = 50;
@@ -17,11 +19,19 @@ public class Flying : MonoBehaviour, IMovement
     private float YRotate = 0;
     private float XRotate = 0;
 
+    private void Start()
+    {
+        distTrack = new DistanceTracker(transform.position, Vector3.down);
+    }
+
     void IMovement.Move()
     {
         Move();
         Rotate();
         DebugInfo();
+        distanceFromGround = distTrack.CalculateDist();
+        distTrack.DebugRay();
+        
     }
 
     private void Move()
@@ -68,6 +78,7 @@ public class Flying : MonoBehaviour, IMovement
         DebugPanel.Log("Mouse Y", "Input", YRotate);
         DebugPanel.Log("Mouse X", "Input", XRotate);
         DebugPanel.Log("FlySpeed", "Movement", currentSpeed);
+        DebugPanel.Log("distanceFromGround", "distanceFromGround", distanceFromGround);
     }
 
     
