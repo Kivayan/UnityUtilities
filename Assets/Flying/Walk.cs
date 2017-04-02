@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 
-public class Walk : MonoBehaviour, IMovement
+
+    public class Walk : MonoBehaviour, IMovement
 {
     public float speed = 6.0F;
     public float jumpSpeed = 8.0F;
@@ -56,8 +57,7 @@ public class Walk : MonoBehaviour, IMovement
         DebugPanel.Log("XRotateNormalizeStartPoint", "Rotation", XRotateNormalizeStartPoint);
     }
 
-
-    //Ensures that if rotation in X is not set to 0 it will be lerped to 0. 
+    //Ensures that if rotation in X is not set to 0 it will be lerped to 0.
     //This will happen in most scenarios where movement engine is changed from flying (which allows rotation in xAxis)
     private void ResetXRotation()
     {

@@ -11,7 +11,6 @@ public class MovementController : MonoBehaviour
 
     private Vector3 startingRotation;
 
-
     [Range(0.2f, 4f)] public float awaitSecondSpaceTime;
     private float flyTriggerTimer = 0f;
     private bool awaitingSecondSpace = false;
@@ -28,12 +27,12 @@ public class MovementController : MonoBehaviour
     private void Update()
     {
         MonitorFly();
-        SwitchMovementType();
+        SwitchMovementTypeSiple();
         currentMovement.Move();
         DebugInfo();
     }
 
-    private void SwitchMovementType()
+    private void SwitchMovementTypeSiple()
     {
         if (Input.GetKeyDown(KeyCode.Alpha1))
             SwitchOnWalk();
