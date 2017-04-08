@@ -37,9 +37,15 @@ public class SkillEngine : MonoBehaviour
     private void Start()
     {
         PopulateSkills();
-        foreach(var skill in skills)
+        DebugCurrentSkillStatus();
+       
+    }
+
+    private void DebugCurrentSkillStatus()
+    {
+        foreach (var skill in skills)
         {
-            Debug.Log("Skills = " + skill.skillName + " Maxlevel = " + skill.skillMaxLevel + " currentLevel = " + skill.currentLevel) ;
+            Debug.Log("Skills = " + skill.skillName + " Maxlevel = " + skill.skillMaxLevel + " currentLevel = " + skill.currentLevel);
         }
     }
 }

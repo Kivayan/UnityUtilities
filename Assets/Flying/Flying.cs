@@ -1,111 +1,113 @@
 ﻿using UnityEngine;
 
-public class Flying : MonoBehaviour, IMovement
+namespace movementEngine
 {
-    private float currentSpeed;
-    public float speed = 6.0F;
-    public float shiftSpeed = 12f;
-    public float riseSpeed = 8.0F;
-    public float descentSpeed = -8.0F;
-    public float gravity = 0;
-
-    public float distanceLimit;
-    private bool limtBreached = false;
-    private Vector3 moveDirection = Vector3.zero;
-
-    [Range(20, 150)] public float mouseYSpeed = 50;
-    [Range(20, 150)] public float mouseXSpeed = 50;
-
-    private float YRotate = 0;
-    private float XRotate = 0;
-
-    private float distFromGround;
-    private Distance dist;
-
-    private void Start()
+    public class Flying : MonoBehaviour, IMovement
     {
-        dist = GetComponent<Distance>();
-    }
+        private float currentSpeed;
+        public float speed = 6.0F;
+        public float shiftSpeed = 12f;
+        public float riseSpeed = 8.0F;
+        public float descentSpeed = -8.0F;
+        public float gravity = 0;
 
-    void IMovement.Move()
-    {
-        Move();
-        Rotate();
-        DebugInfo();
-        UpdateDist();
-    }
+        public float distanceLimit;
+        private bool limtBreached = false;
+        private Vector3 moveDirection = Vector3.zero;
 
-    private void Move()
-    {
-        CharacterController controller = GetComponent<CharacterController>();
+        [Range(20, 150)] public float mouseYSpeed = 50;
+        [Range(20, 150)] public float mouseXSpeed = 50;
 
-        moveDirection = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
-        moveDirection = transform.TransformDirection(moveDirection);
-        moveDirection *= currentSpeed;
-        moveDirection.y -= gravity * Time.deltaTime;
+        private float YRotate = 0;
+        private float XRotate = 0;
 
-        RiseAndDescend();
-        Accelerate();
+        private float distFromGround;
+        private Distance dist;
 
-        if (distFromGround >= distanceLimit)
+        private void Start()
         {
-            limtBreached = true;
-            moveDirection = Vector3.down;
-        }
-        else
-        {
-            limtBreached = false;
+            dist = GetComponent<Distance>();
         }
 
-        controller.Move(moveDirection * Time.deltaTime);
-    }
+        void IMovement.Move()
+        {
+            Move();
+            Rotate();
+            DebugInfo();
+            UpdateDist();
+        }
 
-    private void Rotate()
-    {
-        XRotate += -(Input.GetAxis("Mouse Y") * mouseYSpeed * Time.deltaTime);
-        YRotate += Input.GetAxis("Mouse X") * mouseXSpeed * Time.deltaTime;
+        private void Move()
+        {
+            CharacterController controller = GetComponent<CharacterController>();
 
-        transform.rotation = Quaternion.Euler(new Vector3(XRotate, YRotate, 0));
-    }
+            moveDirection = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
+            moveDirection = transform.TransformDirection(moveDirection);
+            moveDirection *= currentSpeed;
+            moveDirection.y -= gravity * Time.deltaTime;
 
-    private void RiseAndDescend()
-    {
-        if (Input.GetKey(KeyCode.Space))
-            moveDirection.y = riseSpeed;
-        if (Input.GetKey(KeyCode.LeftControl))
-            moveDirection.y = descentSpeed;
-    }
+            RiseAndDescend();
+            Accelerate();
 
-    private void Accelerate()
-    {
-        if (Input.GetKey(KeyCode.LeftShift))
-            currentSpeed = shiftSpeed;
-        else
-            currentSpeed = speed;
-    }
+            if (distFromGround >= distanceLimit)
+            {
+                limtBreached = true;
+                moveDirection = Vector3.down;
+            }
+            else
+            {
+                limtBreached = false;
+            }
 
-    private void DebugInfo()
-    {
-        DebugPanel.Log("Mouse Y", "Input", YRotate);
-        DebugPanel.Log("Mouse X", "Input", XRotate);
-        DebugPanel.Log("FlySpeed", "Movement", currentSpeed);
-        DebugPanel.Log("LimitBreached", "Movement", limtBreached);
-        DebugPanel.Log("distFromGround", "Movement", distFromGround);
-    }
+            controller.Move(moveDirection * Time.deltaTime);
+        }
 
-    private void UpdateDist()
-    {
-        distFromGround = dist.distance;
-    }
+        private void Rotate()
+        {
+            XRotate += -(Input.GetAxis("Mouse Y") * mouseYSpeed * Time.deltaTime);
+            YRotate += Input.GetAxis("Mouse X") * mouseXSpeed * Time.deltaTime;
 
-    void IMovement.SetCurrentRotation(Vector3 startingRotation)
-    {
-        XRotate = startingRotation.x;
-        YRotate = startingRotation.y;
-    }
+            transform.rotation = Quaternion.Euler(new Vector3(XRotate, YRotate, 0));
+        }
 
-    Vector3 IMovement.GetCurrentRotation()
-    {
-        return new Vector3(XRotate, YRotate, transform.rotation.z);
+        private void RiseAndDescend()
+        {
+            if (Input.GetKey(KeyCode.Space))
+                moveDirection.y = riseSpeed;
+            if (Input.GetKey(KeyCode.LeftControl))
+                moveDirection.y = descentSpeed;
+        }
+
+        private void Accelerate()
+        {
+            if (Input.GetKey(KeyCode.LeftShift))
+                currentSpeed = shiftSpeed;
+            else
+                currentSpeed = speed;
+        }
+
+        private void DebugInfo()
+        {
+            DebugPanel.Log("FlySpeed", "FlightParameters", currentSpeed);
+            DebugPanel.Log("LimitBreached", "FlightParameters", limtBreached);
+            DebugPanel.Log("distFromGround", "FlightParameters", distFromGround);
+
+        }
+
+        private void UpdateDist()
+        {
+            distFromGround = dist.GetCurrentDistance();
+        }
+
+        void IMovement.SetCurrentRotation(Vector3 startingRotation)
+        {
+            XRotate = startingRotation.x;
+            YRotate = startingRotation.y;
+        }
+
+        Vector3 IMovement.GetCurrentRotation()
+        {
+            return new Vector3(XRotate, YRotate, transform.rotation.z);
+        }
     }
 }

@@ -1,34 +1,36 @@
 ﻿using UnityEngine;
 
-public class Distance : MonoBehaviour
+namespace movementEngine
 {
-    private RaycastHit rayHit;
-    private Ray ray;
-
-    public float distance;
-
-    private void Start()
+    public class Distance : MonoBehaviour
     {
-        ray = new Ray(transform.position, Vector3.down);
-    }
+        private RaycastHit rayHit;
+        private Ray ray;
 
-    private void Update()
-    {
-        CalculateDist();
-        DebugInfo();
-    }
+        private float distance;
 
-    private void DebugInfo()
-    {
-        DebugPanel.Log("Distance", "Distance", distance);
-    }
-
-    private void CalculateDist()
-    {
-        if (Physics.Raycast(transform.position, Vector3.down, out rayHit))
+        private void Start()
         {
-            distance = rayHit.distance;
+            ray = new Ray(transform.position, Vector3.down);
         }
-        Debug.DrawRay(transform.position, Vector3.down);
+
+        private void Update()
+        {
+            CalculateDist();
+        }
+
+        private void CalculateDist()
+        {
+            if (Physics.Raycast(transform.position, Vector3.down, out rayHit))
+            {
+                distance = rayHit.distance;
+            }
+            Debug.DrawRay(transform.position, Vector3.down);
+        }
+
+        public float GetCurrentDistance()
+        {
+            return distance;
+        }
     }
 }
