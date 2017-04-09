@@ -13,5 +13,9 @@ public interface IMovement
     //Sets rotation - this will have a value of GetCurrentRotation() from previous Movement model.
     //Ensure that rotation does not change
     void SetCurrentRotation(Vector3 startingRotation);
+
+    //necessary for flight
+    void EnableGravity();
+    void DisableGravity();
  
 }

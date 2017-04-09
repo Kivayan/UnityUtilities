@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 namespace movementEngine
 {
@@ -9,7 +10,8 @@ namespace movementEngine
         public float shiftSpeed = 12f;
         public float riseSpeed = 8.0F;
         public float descentSpeed = -8.0F;
-        public float gravity = 0;
+        private float gravity = 0;
+        public float endOfStaminaGravity = 9f;
 
         public float distanceLimit;
         private bool limtBreached = false;
@@ -44,7 +46,7 @@ namespace movementEngine
             moveDirection = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
             moveDirection = transform.TransformDirection(moveDirection);
             moveDirection *= currentSpeed;
-            moveDirection.y -= gravity * Time.deltaTime;
+            moveDirection.y -= gravity;//* Time.deltaTime;
 
             RiseAndDescend();
             Accelerate();
@@ -91,7 +93,17 @@ namespace movementEngine
             DebugPanel.Log("FlySpeed", "FlightParameters", currentSpeed);
             DebugPanel.Log("LimitBreached", "FlightParameters", limtBreached);
             DebugPanel.Log("distFromGround", "FlightParameters", distFromGround);
+            DebugPanel.Log("gravity", "FlightParameters", gravity);
+        }
 
+        void IMovement.EnableGravity()
+        {
+            gravity = endOfStaminaGravity;
+        }
+
+        public void DisableGravity()
+        {
+            gravity = 0f;
         }
 
         private void UpdateDist()
@@ -109,5 +121,7 @@ namespace movementEngine
         {
             return new Vector3(XRotate, YRotate, transform.rotation.z);
         }
+
+
     }
 }

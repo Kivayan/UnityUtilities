@@ -5,6 +5,7 @@ namespace movementEngine
     [RequireComponent(typeof(Flying))]
     [RequireComponent(typeof(Walk))]
     [RequireComponent(typeof(CharacterController))]
+
     public class MovementController : MonoBehaviour
     {
         private IMovement currentMovement;
@@ -12,7 +13,8 @@ namespace movementEngine
         private IMovement fly;
 
         private Vector3 startingRotation;
-        
+
+        private CharacterController controller;
 
         [Range(0.2f, 4f)] public float awaitSecondSpaceTime;
         private float flyTriggerTimer = 0f;
@@ -28,7 +30,8 @@ namespace movementEngine
             fly = GetComponent<Flying>();
             currentMovement = walk;
             currentMovement.SetCurrentRotation(new Vector3(0, 0, 0));
-            flightStamina = new Timer(5f);
+            flightStamina = new Timer(3f);
+            controller = GetComponent<CharacterController>();
         }
 
         private void Update()
@@ -37,7 +40,6 @@ namespace movementEngine
             SwitchMovementTypeSimple();
             currentMovement.Move();
             DebugInfo();
-  
         }
 
         private void SwitchMovementTypeSimple()
@@ -54,10 +56,24 @@ namespace movementEngine
             flightStamina.TimerTracker();
             flightStaminaCurrentValue = flightStamina.GetCurrentTimerValue();
 
+
+            //When stamina is over, trurn on gravity and only on touchdown switch on walk
             if (flightStaminaCurrentValue <= 0 && currentMovement == fly)
-                SwitchOnWalk();
+            {
+                if (controller.isGrounded != true)
+                    fly.EnableGravity();
+                else
+                    SwitchOnWalk();
+            }
 
+            DoubleSpaceFlightTrigger();
 
+            if (startCount == true)
+                flyTriggerTimer += Time.deltaTime;
+        }
+
+        private void DoubleSpaceFlightTrigger()
+        {
             if (Input.GetKeyDown(KeyCode.Space))
                 startCount = true;
 
@@ -79,9 +95,6 @@ namespace movementEngine
                 awaitingSecondSpace = false;
                 flyTriggerTimer = 0;
             }
-
-            if (startCount == true)
-                flyTriggerTimer += Time.deltaTime;
         }
 
         private void SwitchOnWalk()
@@ -93,6 +106,7 @@ namespace movementEngine
 
         private void SwitchOnFly()
         {
+            fly.DisableGravity();
             flightStamina.TimerOn();
             startingRotation = currentMovement.GetCurrentRotation();
             fly.SetCurrentRotation(startingRotation);

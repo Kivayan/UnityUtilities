@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 namespace movementEngine
 {
@@ -79,6 +80,11 @@ namespace movementEngine
             }
         }
 
+        private void Land()
+        {
+
+        }
+
         void IMovement.SetCurrentRotation(Vector3 startingRotation)
         {
             XRotate = startingRotation.x;
@@ -88,6 +94,16 @@ namespace movementEngine
         Vector3 IMovement.GetCurrentRotation()
         {
             return new Vector3(XRotate, YRotate, transform.rotation.z);
+        }
+
+        public void EnableGravity()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void DisableGravity()
+        {
+            throw new NotImplementedException();
         }
     }
 }
