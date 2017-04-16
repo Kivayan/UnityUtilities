@@ -84,6 +84,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\AnimatorHandler\AnimatorHandler.cs" />
     <Compile Include="Assets\Catapult\CatapultEngine.cs" />
     <Compile Include="Assets\Extensions\Debug\DebugPanel.cs" />
     <Compile Include="Assets\Extensions\Debug\DebugPanel\DebugPanelField.cs" />
