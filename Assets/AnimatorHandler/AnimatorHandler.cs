@@ -1,9 +1,11 @@
-﻿using System.Collections;
+﻿using UnityEngine;
 using System.Collections.Generic;
-using UnityEngine;
+using System;
 
-public class AnimatorHandler : MonoBehaviour {
-
+[RequireComponent(typeof(CharacterController))]
+[RequireComponent(typeof(Animator))]
+public class AnimatorHandler : MonoBehaviour
+{
     private Animator anim;
     private CharacterController controller;
 
@@ -11,16 +13,22 @@ public class AnimatorHandler : MonoBehaviour {
     private bool isSprinting;
     public float speedMultiplierBase = 1f;
     public float speedMultiplierIncreased = 2f;
+
+    //Jump can optionally have another name
     private string jump;
     private bool isDead = false;
-    public string[] attacks;
 
-    void Start()
+    ///populate attackNames - they should match exactly Animator parameters
+    ///this will serve as a reffernce, but code will validate if called name is contained within this list
+    public List<string> attacks;
+
+
+    private void Start()
     {
         anim = GetComponent<Animator>();
     }
 
-    void Update()
+    private void Update()
     {
         DetectMovement();
     }
@@ -37,6 +45,12 @@ public class AnimatorHandler : MonoBehaviour {
         isSprinting = false;
     }
 
+    public void TriggerDead()
+    {
+        isDead = true;
+        anim.SetBool("isDead", isDead);
+    }
+
     public void TriggerJump()
     {
         if (jump != null || jump != "")
@@ -45,10 +59,13 @@ public class AnimatorHandler : MonoBehaviour {
             anim.SetTrigger("jump");
     }
 
-
-    public void TriggerAttack(string attackType)
+    public void TriggerAttack(string attackName)
     {
-        anim.SetTrigger(attackType);
+        if (!attacks.Contains(attackName))
+        {
+            throw new Exception("Provided attack name is not valid " + attackName);   
+        }
+        anim.SetTrigger(attackName);
     }
 
     private void DetectMovement()
@@ -59,8 +76,5 @@ public class AnimatorHandler : MonoBehaviour {
             isMoving = true;
 
         anim.SetBool("isMoving", isMoving);
-
-        
     }
-
 }
