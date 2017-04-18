@@ -22,6 +22,7 @@ public class AnimatorHandler : MonoBehaviour
     ///this will serve as a reffernce, but code will validate if called name is contained within this list
     public List<string> attacks;
 
+    
 
     private void Start()
     {

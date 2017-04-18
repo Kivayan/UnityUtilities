@@ -76,3 +76,4 @@ $RECYCLE.BIN/
 *.suo
 ProjectSettings/ProjectVersion.txt
 Assets/Standard Assets/Editor/CrossPlatformInput/CrossPlatformInputInitialize.cs
+*.unity

@@ -99,6 +99,7 @@
     <Compile Include="Assets\Skills\SkillEngine.cs" />
     <Compile Include="Assets\Stamina\StaminaController.cs" />
     <Compile Include="Assets\Stamina\StamniaTester.cs" />
+    <Compile Include="Assets\Utils\BackgroundSoundManager.cs" />
     <Compile Include="Assets\Utils\TMP.cs" />
     <Compile Include="Assets\Utils\Test.cs" />
   </ItemGroup>
